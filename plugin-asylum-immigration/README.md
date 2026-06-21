@@ -34,6 +34,14 @@ named, dated source. Asserting it — or inventing a citation for it — is a
 failure. The other rows are grounded claims that should be asserted *with* their
 named citations.
 
+The grounded rows' citations were **verified against the live sources on
+2026-06-21** (each row carries a `verified_on` field and a real `url`). Two
+were corrected during verification: `cc-003` was re-attributed from UNHCR to the
+**UN Human Rights Council Fact-Finding Mission** (doc `A/HRC/51/43`), and
+`cc-005` was narrowed to the attacks-on-civilians finding the Amnesty source
+actually establishes. Re-verify before relying on these in a filing — country
+conditions and source URLs change.
+
 ## Using it
 
 Fork `anthropics/claude-for-legal`, drop this plugin in, and load it. `CLAUDE.md`
