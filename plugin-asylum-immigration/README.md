@@ -26,6 +26,8 @@ Fabricating a citation to satisfy the rule is itself a failure.
 | `skills/asylum-declaration-drafting/SKILL.md` | Drafts the applicant's first-person declaration using only provided facts; gaps become `[needs input]`, never invented. |
 | `benchmark/country_conditions_eval.jsonl` | Eval rows, including a **trap row** (`cc-004-TRAP`) and refusal edge cases that a faithful system must not assert. |
 | `benchmark/check_benchmark.py` | Validator that enforces the sourcing invariant (run in CI). |
+| `benchmark/run_eval.py` | Faithfulness grader for a system's answers; `--self-test` runs in CI without a model. |
+| `benchmark/ATTORNEY_REVIEW.md` | The human-in-the-loop boundary: attorney sign-off for new grounded rows and ambiguous model answers. |
 
 ## The trap row
 

@@ -21,6 +21,10 @@ data/openi/
 results.jsonl
 *.log
 
+# Generated/filled labeling sheets (may contain PHI); keep labeling/template.csv
+labeling/sheet.csv
+labeling/*_filled.csv
+
 # OS / editor
 .DS_Store
 .idea/

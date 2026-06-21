@@ -36,6 +36,19 @@ stdlib smoke tests + stub run, and validates the legal plugin's manifest and the
 country-conditions sourcing invariant (`benchmark/check_benchmark.py`). Both jobs
 need only Python 3.11 and the standard library.
 
+## Human-in-the-loop boundary
+
+Both projects are automated up to the point where a domain expert is genuinely
+required, and stop there with explicit hand-off artifacts rather than guessing:
+
+- **Legal:** new grounded benchmark rows and ambiguous model answers need a
+  licensed attorney — see `plugin-asylum-immigration/benchmark/ATTORNEY_REVIEW.md`.
+- **Medical:** ground-truth labels on real X-ray/report pairs need a radiologist
+  — see `medical-contradiction-detection/labeling/README.md`.
+
+Everything up to those boundaries (pipelines, builders, validators, graders,
+CI) runs without a human.
+
 ## Shared disclaimer
 
 Neither project is professional advice. The medical project is an evaluation

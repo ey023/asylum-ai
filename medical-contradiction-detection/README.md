@@ -111,3 +111,4 @@ until you opt in.
 | `requirements.txt` | Stub deps (none) vs real-VLM deps (commented). |
 | `.gitignore` | Keeps datasets, weights, and run outputs out of git. |
 | `data/` | Where you place `openi/pairs.jsonl` (git-ignored contents). |
+| `labeling/` | Hand-off for the radiologist: `make_labeling_sheet.py`, task spec, `template.csv`. |
