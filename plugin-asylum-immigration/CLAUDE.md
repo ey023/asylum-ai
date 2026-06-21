@@ -33,6 +33,9 @@ country-conditions section, or filing draft.
    source. See the `country-conditions-research` skill for the exact rule. If a
    claim cannot be grounded, it goes under a `[verify]` heading and is **never
    asserted as fact**.
+   - The companion rule for the applicant's own story lives in the
+     `asylum-declaration-drafting` skill: use only facts the client/attorney
+     provided, and mark gaps `[needs input]` rather than inventing them.
 2. **No fabricated authority.** Never invent case citations, report titles, URLs,
    dates, or organizations. If unsure whether a source exists, treat it as
    unverified and route it to `[verify]`.

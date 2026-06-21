@@ -14,12 +14,14 @@
 # (none — standard library only)
 
 # --- REAL-VLM deps ---------------------------------------------------------
-# Pin these to versions you have tested. Pillow is needed to load Open-i PNGs;
-# torch/transformers/accelerate run an open VLM such as LLaVA / Qwen-VL.
+# Needed only when CONFIG["VLM_BACKEND"] = "real" (see _run_vlm_real). Pillow
+# loads Open-i PNGs; torch/transformers/accelerate run an open VLM such as
+# Qwen2-VL or LLaVA. Uncomment and pin to versions you have tested:
 #
 # Pillow>=10.0
 # torch>=2.2
-# transformers>=4.40
+# transformers>=4.40       # AutoModelForVision2Seq + chat templates
 # accelerate>=0.30
-# sentencepiece>=0.2      # tokenizer dep for some VLMs
-# einops>=0.7             # required by several VLM model files
+# sentencepiece>=0.2       # tokenizer dep for some VLMs
+# einops>=0.7              # required by several VLM model files
+# qwen-vl-utils>=0.0.8     # only if you use a Qwen2-VL checkpoint

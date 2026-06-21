@@ -29,6 +29,13 @@ either one without touching the other.
   and an eval set), meant to be forked into `anthropics/claude-for-legal`. There
   is nothing to "run"; read its `README.md` and `CLAUDE.md`.
 
+## Continuous integration
+
+`.github/workflows/ci.yml` runs on every push: it executes the medical baseline's
+stdlib smoke tests + stub run, and validates the legal plugin's manifest and the
+country-conditions sourcing invariant (`benchmark/check_benchmark.py`). Both jobs
+need only Python 3.11 and the standard library.
+
 ## Shared disclaimer
 
 Neither project is professional advice. The medical project is an evaluation

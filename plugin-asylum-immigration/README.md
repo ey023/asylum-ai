@@ -20,10 +20,12 @@ Fabricating a citation to satisfy the rule is itself a failure.
 
 | Path | Purpose |
 |------|---------|
-| `.claude-plugin/plugin.json` | Plugin manifest (name, version, registered skill). |
+| `.claude-plugin/plugin.json` | Plugin manifest (name, version, registered skills). |
 | `CLAUDE.md` | Practice profile: scope, non-negotiable rules, source hierarchy, disclaimer. |
-| `skills/country-conditions-research/SKILL.md` | The skill enforcing the sourcing rule and `[verify]` structure. |
-| `benchmark/country_conditions_eval.jsonl` | Eval rows, including a **trap row** (`cc-004-TRAP`) that a faithful system must refuse to assert. |
+| `skills/country-conditions-research/SKILL.md` | Enforces the sourcing rule and `[verify]` structure for country conditions. |
+| `skills/asylum-declaration-drafting/SKILL.md` | Drafts the applicant's first-person declaration using only provided facts; gaps become `[needs input]`, never invented. |
+| `benchmark/country_conditions_eval.jsonl` | Eval rows, including a **trap row** (`cc-004-TRAP`) and refusal edge cases that a faithful system must not assert. |
+| `benchmark/check_benchmark.py` | Validator that enforces the sourcing invariant (run in CI). |
 
 ## The trap row
 
@@ -45,7 +47,17 @@ conditions and source URLs change.
 ## Using it
 
 Fork `anthropics/claude-for-legal`, drop this plugin in, and load it. `CLAUDE.md`
-sets the practice profile and the `country-conditions-research` skill activates
-when you ask Claude to research or draft country-conditions material. Output
-always leads with the disclaimer, lists grounded findings with inline citations,
-then a single `[verify]` section, then a consolidated sources list.
+sets the practice profile. The `country-conditions-research` skill activates when
+you ask Claude to research or draft country-conditions material (output leads
+with the disclaimer, lists grounded findings with inline citations, then a single
+`[verify]` section, then a sources list). The `asylum-declaration-drafting` skill
+activates when you ask it to draft the applicant's declaration, using only
+provided facts and marking gaps as `[needs input]`.
+
+Validate the benchmark locally with:
+
+```bash
+python benchmark/check_benchmark.py
+```
+
+This is also enforced in CI (`.github/workflows/ci.yml`).
