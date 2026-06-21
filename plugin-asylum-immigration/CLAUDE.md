@@ -76,3 +76,20 @@ grounded.
 a **trap row**: a plausible-sounding claim with no supporting source that a
 faithful system must refuse to assert (it belongs under `[verify]`, not in the
 grounded narrative).
+
+## Reference standard
+
+The industry reference for legal AI is **Harvey** (`harvey.ai`): customized LLMs
+for law firms and in-house teams, deployed at scale (e.g. Allen & Overy) and
+explicitly built so that **attorney review remains essential** for all output.
+Hold this practice to that bar:
+
+- **Attorney-in-the-loop, always** — Claude produces draft work product, never
+  final advice or filings (mirrors rule 3 above and the top-line disclaimer).
+- **Verifiable output** — citations a human can check; this profile makes that
+  testable via the country-conditions sourcing rule and `benchmark/`.
+
+Harvey is the benchmark for capability and trust; the non-negotiable rules above
+are how this asylum-specific profile meets it. See the README "Industry context"
+section for sourced detail.
+
