@@ -1,0 +1,25 @@
+# ---------------------------------------------------------------------------
+# requirements.txt — split into STUB deps and REAL-VLM deps.
+#
+# STUB MODE (default): run_baseline.py runs end-to-end on the Python standard
+# library ALONE. There is nothing to install to reproduce the stub results:
+#
+#     python run_baseline.py
+#
+# REAL-VLM MODE: uncomment the block below once you implement
+# run_vlm._run_vlm_real and set CONFIG["VLM_BACKEND"] = "real".
+# ---------------------------------------------------------------------------
+
+# --- STUB deps -------------------------------------------------------------
+# (none — standard library only)
+
+# --- REAL-VLM deps ---------------------------------------------------------
+# Pin these to versions you have tested. Pillow is needed to load Open-i PNGs;
+# torch/transformers/accelerate run an open VLM such as LLaVA / Qwen-VL.
+#
+# Pillow>=10.0
+# torch>=2.2
+# transformers>=4.40
+# accelerate>=0.30
+# sentencepiece>=0.2      # tokenizer dep for some VLMs
+# einops>=0.7             # required by several VLM model files
