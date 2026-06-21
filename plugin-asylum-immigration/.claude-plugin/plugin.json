@@ -1,0 +1,18 @@
+{
+  "name": "asylum-immigration",
+  "version": "0.1.0",
+  "description": "Claude-for-Legal practice plugin for U.S. asylum & immigration work. Drafts country-conditions research and filings for attorney review, with a hard rule that every country-conditions claim must cite a real source.",
+  "author": {
+    "name": "asylum-ai"
+  },
+  "keywords": [
+    "legal",
+    "immigration",
+    "asylum",
+    "country-conditions",
+    "claude-for-legal"
+  ],
+  "skills": [
+    "./skills/country-conditions-research/SKILL.md"
+  ]
+}

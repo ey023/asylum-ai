@@ -1,0 +1,27 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+env/
+
+# Downloaded datasets / model weights (do not commit large binaries)
+data/openi/
+*.png
+*.jpg
+*.jpeg
+*.dcm
+*.xml
+*.tar
+*.tar.gz
+*.zip
+
+# Run outputs
+results.jsonl
+*.log
+
+# OS / editor
+.DS_Store
+.idea/
+.vscode/
