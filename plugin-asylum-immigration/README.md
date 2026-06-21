@@ -46,6 +46,21 @@ were corrected during verification: `cc-003` was re-attributed from UNHCR to the
 actually establishes. Re-verify before relying on these in a filing — country
 conditions and source URLs change.
 
+## Industry context
+
+[**Harvey**](https://www.harvey.ai/) is the de facto industry standard for legal
+AI: customized LLMs for law firms and in-house teams (built on OpenAI models;
+[Allen & Overy's exclusive launch partner](https://www.aoshearman.com/en/news/ao-announces-exclusive-launch-partnership-with-harvey)
+rolled it out to 3,500+ lawyers across 43 offices), explicitly positioned so that
+**attorney review remains essential** for all output
+([Wikipedia](https://en.wikipedia.org/wiki/Harvey_(software)),
+[OpenAI](https://openai.com/index/harvey/)). This plugin adopts the same two
+principles Harvey operates under — **attorney-in-the-loop** ("draft for attorney
+review, not legal advice") and **verifiable work product** — and adds a hard,
+machine-checkable sourcing rule for the country-conditions context specific to
+asylum work: every claim cites a real source or goes under `[verify]`, enforced
+by `benchmark/check_benchmark.py` and graded by `benchmark/run_eval.py`.
+
 ## Using it
 
 Fork `anthropics/claude-for-legal`, drop this plugin in, and load it. `CLAUDE.md`

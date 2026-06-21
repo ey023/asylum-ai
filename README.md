@@ -36,6 +36,20 @@ stdlib smoke tests + stub run, and validates the legal plugin's manifest and the
 country-conditions sourcing invariant (`benchmark/check_benchmark.py`). Both jobs
 need only Python 3.11 and the standard library.
 
+## Industry standards we anchor to
+
+Each project is positioned against the leading evidence-grounded tool in its
+field, and shares that tool's core faithfulness principle:
+
+- **Medical → [OpenEvidence](https://www.openevidence.com/about)** — clinical AI
+  that links every statement to a peer-reviewed source. Our harness measures the
+  inverse failure (silently endorsing a report that contradicts the image).
+- **Legal → [Harvey](https://www.harvey.ai/)** — legal AI built so attorney
+  review stays essential. Our plugin keeps the attorney-in-the-loop and adds a
+  machine-checkable "cite a real source or say `[verify]`" rule.
+
+See each project's README "Industry context" section for sourced detail.
+
 ## Human-in-the-loop boundary
 
 Both projects are automated up to the point where a domain expert is genuinely

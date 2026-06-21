@@ -102,6 +102,22 @@ See `requirements.txt`. Stub mode needs **nothing** beyond the standard
 library; the real-VLM dependencies are listed separately and commented out
 until you opt in.
 
+## Industry context
+
+[**OpenEvidence**](https://www.openevidence.com/about) is the de facto industry
+standard for evidence-grounded clinical AI: a clinician-facing copilot that
+answers point-of-care questions with **every statement linked back to
+peer-reviewed sources** (PubMed, major guidelines), used daily by a large share
+of U.S. physicians ([NBC News](https://www.nbcnews.com/tech/tech-news/openevidence-ai-doctor-medical-physician-login-app-what-npi-uptodate-rcna341064),
+[PR Newswire](https://www.prnewswire.com/news-releases/openevidence-the-fastest-growing-application-for-physicians-in-history-announces-210-million-round-at-3-5-billion-valuation-302505806.html)).
+Its defining principle — never assert a clinical claim without a traceable
+citation — is exactly the faithfulness property this project measures from the
+opposite direction. Where OpenEvidence enforces grounding on its **output**,
+this harness quantifies how often a VLM **silently endorses** a report that
+contradicts the image. We treat that transparent-sourcing standard as the bar a
+deployed image/report system should clear; the silent-contradiction rate is one
+way to check whether it does.
+
 ## Files
 
 | File | Purpose |
