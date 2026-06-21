@@ -13,6 +13,7 @@
     "claude-for-legal"
   ],
   "skills": [
-    "./skills/country-conditions-research/SKILL.md"
+    "./skills/country-conditions-research/SKILL.md",
+    "./skills/asylum-declaration-drafting/SKILL.md"
   ]
 }

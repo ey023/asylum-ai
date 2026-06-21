@@ -60,7 +60,9 @@ CONFIG = {
     # TODO(you): flip to "real" once you have wired up a model in run_vlm().
     "VLM_BACKEND": "stub",
 
-    # Optional knobs your real model might read. Ignored by the stub.
+    # Optional knobs the real backend reads. Ignored by the stub.
+    # TODO(you): set this to a real open VLM id, e.g. "Qwen/Qwen2-VL-2B-Instruct"
+    # or a LLaVA checkpoint, before using VLM_BACKEND="real".
     "VLM_MODEL_NAME": "TODO-your-open-vlm",
     "VLM_MAX_NEW_TOKENS": 16,
 
@@ -382,22 +384,88 @@ def _run_vlm_stub(image: str, report: str, _cfg: dict) -> str:
     return "support"
 
 
-def _run_vlm_real(image: str, report: str, cfg: dict) -> str:
-    """Real open-VLM backend. Not implemented in the stub-only checkout.
+# Module-level cache so the (large) model is loaded once per process.
+_VLM_CACHE: dict = {}
 
-    TODO(you): load your model once (cache it on the function or a module
-    global), render PROMPT_TEMPLATE, run inference, and map the output text to
-    a label. Pseudocode:
 
-        prompt = PROMPT_TEMPLATE.format(image=image, report=report)
-        text = your_model.generate(image=load(image), prompt=prompt,
-                                    max_new_tokens=cfg["VLM_MAX_NEW_TOKENS"])
-        return text  # _normalize_label() will coerce it to the vocabulary
+def _load_real_vlm(cfg: dict):
+    """Lazily load an open VLM via transformers and cache it.
+
+    All heavy imports happen *inside* this function so the stub path keeps
+    working with zero third-party dependencies.
+
+    TODO(you): swap CONFIG["VLM_MODEL_NAME"] for the open VLM you want and adjust
+    the processor/model classes if your model needs different ones. The default
+    targets a Qwen2-VL-style chat VLM (transformers >= 4.40).
     """
-    raise NotImplementedError(
-        "VLM_BACKEND='real' but run_vlm._run_vlm_real is not implemented yet. "
-        "Wire up your open VLM here, then keep VLM_BACKEND='real'."
+    if "model" in _VLM_CACHE:
+        return _VLM_CACHE["processor"], _VLM_CACHE["model"]
+
+    # Check configuration before pulling in heavy deps, so a misconfigured run
+    # gives a clear message even when torch/transformers are not installed.
+    name = cfg["VLM_MODEL_NAME"]
+    if name.startswith("TODO"):
+        raise ValueError(
+            "Set CONFIG['VLM_MODEL_NAME'] to a real open VLM id "
+            "(e.g. 'Qwen/Qwen2-VL-2B-Instruct') before using VLM_BACKEND='real'."
+        )
+
+    import torch  # noqa: F401  (used for dtype/device selection)
+    from transformers import AutoModelForVision2Seq, AutoProcessor
+
+    device = "cuda" if torch.cuda.is_available() else "cpu"
+    dtype = torch.float16 if device == "cuda" else torch.float32
+    processor = AutoProcessor.from_pretrained(name)
+    model = AutoModelForVision2Seq.from_pretrained(name, torch_dtype=dtype)
+    model.to(device)
+    model.eval()
+
+    _VLM_CACHE.update(processor=processor, model=model, device=device)
+    return processor, model
+
+
+def _run_vlm_real(image: str, report: str, cfg: dict) -> str:
+    """Real open-VLM backend: render the prompt, run inference, return text.
+
+    Contract is unchanged: take (image, report) and return text that
+    `_normalize_label()` will coerce to a label. The image argument is a path to
+    an image file (the real-data loader produces those); we open it with PIL.
+
+    TODO(you): if your model uses a different chat template or message schema,
+    adapt the `messages` construction and `processor` call below to match it.
+    """
+    import torch
+    from PIL import Image
+
+    processor, model = _load_real_vlm(cfg)
+    device = _VLM_CACHE["device"]
+
+    img = Image.open(image).convert("RGB")
+    question = PROMPT_TEMPLATE.format(image="<the attached chest X-ray>", report=report)
+
+    # Standard chat-VLM message schema (image + text in one user turn).
+    messages = [
+        {
+            "role": "user",
+            "content": [
+                {"type": "image"},
+                {"type": "text", "text": question},
+            ],
+        }
+    ]
+    prompt = processor.apply_chat_template(
+        messages, tokenize=False, add_generation_prompt=True
     )
+    inputs = processor(text=[prompt], images=[img], return_tensors="pt").to(device)
+
+    with torch.no_grad():
+        generated = model.generate(
+            **inputs, max_new_tokens=cfg["VLM_MAX_NEW_TOKENS"], do_sample=False
+        )
+    # Drop the prompt tokens so we decode only the model's answer.
+    trimmed = generated[:, inputs["input_ids"].shape[1]:]
+    text = processor.batch_decode(trimmed, skip_special_tokens=True)[0]
+    return text
 
 
 def _normalize_label(text: str, cfg: dict) -> str:

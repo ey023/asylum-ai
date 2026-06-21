@@ -63,13 +63,21 @@ python run_baseline.py --backend real              # use your real VLM
 
 There are two things you replace, both marked `TODO(you)`:
 
-1. **`run_vlm()` (real backend)** — `_run_vlm_real()` in `run_baseline.py`.
-   Load an open VLM (LLaVA / Qwen-VL / InternVL, etc.), render
-   `PROMPT_TEMPLATE`, run inference, and return text — `_normalize_label()`
-   maps it to the label vocabulary. Then set `CONFIG["VLM_BACKEND"] = "real"`
-   (or pass `--backend real`).
+1. **`run_vlm()` (real backend)** — a working reference implementation is
+   already provided in `_run_vlm_real()` / `_load_real_vlm()`: it lazily loads a
+   Qwen2-VL-style chat VLM via `transformers` (`AutoModelForVision2Seq`),
+   renders `PROMPT_TEMPLATE`, runs greedy inference, and returns text that
+   `_normalize_label()` maps to the label vocabulary. To use it:
+   - install the real-VLM deps (see `requirements.txt`),
+   - set `CONFIG["VLM_MODEL_NAME"]` to a real id (e.g.
+     `"Qwen/Qwen2-VL-2B-Instruct"`),
+   - run with `--backend real`.
+   Adjust the message schema / model classes if your checkpoint differs. The
+   heavy imports live *inside* these functions, so the stub path stays
+   dependency-free.
 2. **Real data loader** — `_load_real_pairs()`. Convert the Open-i export into
-   `data/openi/pairs.jsonl`, one JSON object per study.
+   `data/openi/pairs.jsonl`, one JSON object per study. The real backend opens
+   each row's `image` path with PIL, so point `image` at actual image files.
 
 All other tunables live in the **`CONFIG` block** at the top of
 `run_baseline.py` (data dir, contradiction types, label set, seed, model name).
@@ -94,11 +102,29 @@ See `requirements.txt`. Stub mode needs **nothing** beyond the standard
 library; the real-VLM dependencies are listed separately and commented out
 until you opt in.
 
+## Industry context
+
+[**OpenEvidence**](https://www.openevidence.com/about) is the de facto industry
+standard for evidence-grounded clinical AI: a clinician-facing copilot that
+answers point-of-care questions with **every statement linked back to
+peer-reviewed sources** (PubMed, major guidelines), used daily by a large share
+of U.S. physicians ([NBC News](https://www.nbcnews.com/tech/tech-news/openevidence-ai-doctor-medical-physician-login-app-what-npi-uptodate-rcna341064),
+[PR Newswire](https://www.prnewswire.com/news-releases/openevidence-the-fastest-growing-application-for-physicians-in-history-announces-210-million-round-at-3-5-billion-valuation-302505806.html)).
+Its defining principle — never assert a clinical claim without a traceable
+citation — is exactly the faithfulness property this project measures from the
+opposite direction. Where OpenEvidence enforces grounding on its **output**,
+this harness quantifies how often a VLM **silently endorses** a report that
+contradicts the image. We treat that transparent-sourcing standard as the bar a
+deployed image/report system should clear; the silent-contradiction rate is one
+way to check whether it does.
+
 ## Files
 
 | File | Purpose |
 |------|---------|
 | `run_baseline.py` | The whole pipeline: CONFIG, data, builders, `run_vlm()`, scoring. |
+| `test_baseline.py` | Stdlib smoke tests (`python test_baseline.py`); also run in CI. |
 | `requirements.txt` | Stub deps (none) vs real-VLM deps (commented). |
 | `.gitignore` | Keeps datasets, weights, and run outputs out of git. |
 | `data/` | Where you place `openi/pairs.jsonl` (git-ignored contents). |
+| `labeling/` | Hand-off for the radiologist: `make_labeling_sheet.py`, task spec, `template.csv`. |
